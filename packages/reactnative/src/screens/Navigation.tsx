@@ -10,6 +10,7 @@ import ImportWallet from './Authentication/ImportWallet';
 import Login from './Authentication/Login';
 import Onboarding from './Authentication/Onboarding';
 import WalletSetup from './Authentication/WalletSetup';
+import Closet from './Closet';
 import Dashboard from './Dashboard';
 import DebugContracts from './DebugContracts';
 import Home from './Home';
@@ -55,6 +56,9 @@ type AppStackParamsList = {
   Settings: undefined;
   DebugContracts: undefined;
   Accessories: undefined;
+  Closet: {
+    tokenId: number;
+  };
 };
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
@@ -99,6 +103,7 @@ export default function Navigation({}: Props) {
         <AppStack.Screen name="Wallet" component={Wallet} />
         <AppStack.Screen name="DebugContracts" component={DebugContracts} />
         <AppStack.Screen name="Accessories" component={Accessories} />
+        <AppStack.Screen name="Closet" component={Closet} />
       </AppStack.Navigator>
     </NavigationContainer>
   );

@@ -59,19 +59,9 @@ export default function SnowmanList({ balance }: Props) {
 
     if (!snowmen || snowmen.length === 0) return;
 
-    return snowmen.map(snowman => {
-      const remove = () => {
-        setSnowmen(prevSnowmen =>
-          prevSnowmen
-            ? prevSnowmen.filter(
-                _snowman => _snowman.id.toNumber() !== snowman.id.toNumber()
-              )
-            : null
-        );
-        setSnowmanBalance(balance - 1);
-      };
-      return <Snowman key={snowman.id} id={snowman.id} remove={remove} />;
-    });
+    return snowmen.map(snowman => (
+      <Snowman key={snowman.id} id={Number(snowman.id)} />
+    ));
   };
 
   return (

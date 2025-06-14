@@ -38,9 +38,9 @@ export default function Accessories() {
           tabBarInactiveTintColor: '#C7C6C7'
         }}
       >
-        <Tab.Screen name="Belt 🥋" component={Belt} />
-        <Tab.Screen name="Hat 🎩" component={Hat} />
-        <Tab.Screen name="Scarf 🧣" component={Scarf} />
+        <Tab.Screen key="Belt" name="Belt 🥋" component={Belt} />
+        <Tab.Screen key="Hat" name="Hat 🎩" component={Hat} />
+        <Tab.Screen key="Scarf" name="Scarf 🧣" component={Scarf} />
       </Tab.Navigator>
     </View>
   );

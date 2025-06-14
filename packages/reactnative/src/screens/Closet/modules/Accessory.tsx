@@ -1,23 +1,15 @@
-import { Abi } from 'abitype';
 import base64 from 'base-64';
 import { ethers, InterfaceAbi } from 'ethers';
 import React, { useEffect, useState } from 'react';
-import {
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { SvgXml } from 'react-native-svg';
 import { useToast } from 'react-native-toast-notifications';
-import CustomButton from '../../../components/buttons/CustomButton';
 import {
   useAccount,
   useContractRead,
-  useContractWrite,
-  useDeployedContractInfo
+  useDeployedContractInfo,
+  useScaffoldContractWrite
 } from '../../../hooks/eth-mobile';
 import globalStyles from '../../../styles/globalStyles';
 import { COLORS } from '../../../utils/constants';
@@ -25,49 +17,54 @@ import { FONT_SIZE, WINDOW_WIDTH } from '../../../utils/styles';
 
 type Props = {
   name: string;
+  snowman: {
+    address: string | undefined;
+    id: number;
+  };
+  onAddToSnowman: () => void;
 };
 
-export default function Accessory({ name }: Props) {
-  const [balance, setBalance] = useState<number | null>(null);
+export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
   const [accessories, setAccessories] = useState<any[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isMinting, setIsMinting] = useState(false);
+  const [isComposing, setIsComposing] = useState(false);
 
   const { address: connectedAccount } = useAccount();
 
   const { data: accessoryContract } = useDeployedContractInfo(name);
 
-  const toast = useToast();
-
   const { readContract } = useContractRead();
-  const { write } = useContractWrite({
-    abi: accessoryContract?.abi as Abi,
-    address: accessoryContract?.address,
-    functionName: 'mint',
+  const { write } = useScaffoldContractWrite({
+    contractName: name,
+    functionName: 'safeTransferFrom',
     gasLimit: 500000n
   });
 
-  const mint = async () => {
-    if (!accessoryContract) return;
+  const toast = useToast();
 
-    setIsMinting(true);
+  const addToSnowman = async (tokenId: number) => {
+    if (!accessoryContract || !snowman.address) return;
+
+    setIsComposing(true);
+
     try {
+      const encodedSnowmanId = ethers.AbiCoder.defaultAbiCoder().encode(
+        ['uint256'],
+        [snowman.id]
+      );
+
       await write({
-        value: ethers.parseEther('0.01')
+        args: [connectedAccount, snowman.address, tokenId, encodedSnowmanId]
       });
 
-      toast.show(`Minted One Accessory`, {
-        type: 'success'
-      });
-
-      await getAccessories();
+      toast.show(`Added ${name} to Snowman`, { type: 'success' });
+      onAddToSnowman();
     } catch (error) {
-      console.error(error);
-      toast.show(`Error Minting Accessory`, {
-        type: 'danger'
-      });
+      console.log(error);
+      toast.show(JSON.stringify(error), { type: 'danger' });
+    } finally {
+      setIsComposing(false);
     }
-    setIsMinting(false);
   };
 
   const _getAccessories = async () => {
@@ -81,8 +78,6 @@ export default function Accessory({ name }: Props) {
         args: [connectedAccount]
       })
     );
-
-    setBalance(balance);
 
     const tokenURIs = [];
     for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
@@ -122,91 +117,51 @@ export default function Accessory({ name }: Props) {
     if (!accessoryContract) return;
     setIsLoading(true);
 
-    try {
-      await _getAccessories();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    await _getAccessories();
+
+    setIsLoading(false);
   };
 
   useEffect(() => {
     getAccessories();
   }, [accessoryContract]);
 
-  const refresh = async () => {
-    await _getAccessories();
-  };
-
   return (
-    <ScrollView
-      style={styles.container}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl
-          refreshing={false}
-          onRefresh={refresh}
-          colors={[COLORS.primary]}
-          tintColor={COLORS.primary}
-        />
-      }
-    >
-      <View style={styles.header}>
-        <Text style={styles.balance}>Balance: {balance}</Text>
-        <CustomButton
-          text="Mint"
-          onPress={mint}
-          style={styles.button}
-          loading={isMinting}
-        />
-      </View>
+    <View style={styles.container}>
+      <Text style={styles.title}>{name}</Text>
 
       {isLoading ? (
         <ActivityIndicator color={COLORS.primary} />
       ) : (
-        <View style={styles.accessoriesContainer}>
+        <ScrollView
+          contentContainerStyle={styles.accessoriesContainer}
+          showsHorizontalScrollIndicator={false}
+          horizontal
+        >
           {accessories?.map(accessory => (
-            <View key={accessory.id} style={styles.accessory}>
+            <Pressable
+              key={accessory.id}
+              style={styles.accessory}
+              onPress={() => addToSnowman(Number(accessory.id))}
+            >
               <SvgXml
                 xml={accessory.image}
                 width={WINDOW_WIDTH * 0.4}
                 height={WINDOW_WIDTH * 0.4}
               />
-            </View>
+            </Pressable>
           ))}
-        </View>
+        </ScrollView>
       )}
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: 'white',
-    paddingHorizontal: 10,
-    paddingVertical: 4
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  balance: {
-    fontSize: FONT_SIZE.lg,
-    ...globalStyles.textSemiBold,
-    marginBottom: -5
-  },
-  button: {
-    width: '30%',
-    marginTop: 10,
-    alignSelf: 'flex-end'
+    padding: 10
   },
   accessoriesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
     gap: 10,
     marginTop: 10
   },
@@ -214,5 +169,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.gray,
     borderRadius: 10
+  },
+  title: {
+    fontSize: FONT_SIZE.lg,
+    ...globalStyles.textSemiBold,
+    marginBottom: -5
   }
 });

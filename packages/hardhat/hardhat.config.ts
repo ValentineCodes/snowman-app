@@ -47,7 +47,7 @@ const config: HardhatUserConfig = {
     // View the networks that are pre-configured.
     // If the network you are looking for is not here you can add new network settings
     ganache: {
-      url: 'http://192.168.215.126:8545',
+      url: 'http://172.20.10.3:8545',
       accounts: [deployerPrivateKey],
       chainId: 1337
     },

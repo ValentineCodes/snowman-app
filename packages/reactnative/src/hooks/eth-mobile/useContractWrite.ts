@@ -1,5 +1,10 @@
-import { Abi } from 'abitype';
-import { Contract, formatEther, JsonRpcProvider, Wallet } from 'ethers';
+import {
+  Contract,
+  formatEther,
+  InterfaceAbi,
+  JsonRpcProvider,
+  Wallet
+} from 'ethers';
 import { useState } from 'react';
 import { useModal } from 'react-native-modalfy';
 import { useToast } from 'react-native-toast-notifications';
@@ -10,7 +15,7 @@ import { Account } from '../../store/reducers/Wallet';
 import { parseFloat } from '../../utils/eth-mobile';
 
 interface UseWriteConfig {
-  abi: Abi;
+  abi: InterfaceAbi;
   address: string;
   functionName: string;
   args?: any[];

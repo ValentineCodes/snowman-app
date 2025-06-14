@@ -1,23 +1,24 @@
+import { useNavigation } from '@react-navigation/native';
 import base64 from 'base-64';
 import { Contract, JsonRpcProvider } from 'ethers';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Card, Text } from 'react-native-paper';
 import { SvgXml } from 'react-native-svg';
 import { useDeployedContractInfo, useNetwork } from '../hooks/eth-mobile';
 import { COLORS } from '../utils/constants';
 import { WINDOW_WIDTH } from '../utils/styles';
 
-type Props = { id: number; remove: () => void };
+type Props = { id: number };
 interface Metadata {
   name: string;
   image: string;
 }
 
-export default function Snowman({ id, remove }: Props) {
+export default function Snowman({ id }: Props) {
   const [metadata, setMetadata] = useState<Metadata>();
   const [isLoading, setIsLoading] = useState(true);
-
+  const navigation = useNavigation();
   const network = useNetwork();
 
   const { data: snowmanContract, isLoading: isLoadingSnowmanContract } =
@@ -72,7 +73,7 @@ export default function Snowman({ id, remove }: Props) {
   if (!metadata) return null;
 
   return (
-    <View>
+    <Pressable onPress={() => navigation.navigate('Closet', { tokenId: id })}>
       <SvgXml
         xml={metadata.image}
         width={WINDOW_WIDTH * 0.4}
@@ -83,7 +84,7 @@ export default function Snowman({ id, remove }: Props) {
           {metadata.name}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
