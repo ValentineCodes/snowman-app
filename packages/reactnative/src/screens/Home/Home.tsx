@@ -1,4 +1,4 @@
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { ethers, InterfaceAbi } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
@@ -23,6 +23,7 @@ export default function Home() {
   const account = useAccount();
   const network = useNetwork();
   const isFocused = useIsFocused();
+  const navigation = useNavigation();
 
   const { data: snowmanContract, isLoading: isLoadingSnowmanContract } =
     useDeployedContractInfo('Snowman');
@@ -122,12 +123,22 @@ export default function Home() {
           Mint a unique Snowman☃️ for 0.02 ETH
         </Text>
 
-        <CustomButton
-          text="Mint"
-          onPress={mint}
-          style={styles.mintButton}
-          loading={isMinting}
-        />
+        <View style={styles.buttonContainer}>
+          <CustomButton
+            text="Mint"
+            onPress={mint}
+            style={styles.button}
+            loading={isMinting}
+          />
+
+          <CustomButton
+            text="Accessories"
+            type="outline"
+            onPress={() => navigation.navigate('Accessories')}
+            style={styles.button}
+            loading={isMinting}
+          />
+        </View>
       </View>
 
       {isLoadingBalance && !isRefreshing ? (
@@ -178,8 +189,14 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE.md,
     maxWidth: '70%'
   },
-  mintButton: {
+  button: {
     width: '50%',
     marginTop: 10
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    gap: 10
   }
 });

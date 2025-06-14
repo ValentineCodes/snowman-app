@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Token } from '../store/reducers/Tokens';
+import Accessories from './Accessories';
 import CreatePassword from './Authentication/CreatePassword';
 import CreateWallet from './Authentication/CreateWallet';
 import ImportWallet from './Authentication/ImportWallet';
@@ -53,6 +54,7 @@ type AppStackParamsList = {
   Wallet: undefined;
   Settings: undefined;
   DebugContracts: undefined;
+  Accessories: undefined;
 };
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
@@ -96,6 +98,7 @@ export default function Navigation({}: Props) {
         <AppStack.Screen name="Settings" component={Settings} />
         <AppStack.Screen name="Wallet" component={Wallet} />
         <AppStack.Screen name="DebugContracts" component={DebugContracts} />
+        <AppStack.Screen name="Accessories" component={Accessories} />
       </AppStack.Navigator>
     </NavigationContainer>
   );
