@@ -43,7 +43,7 @@ export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
   const toast = useToast();
 
   const addToSnowman = async (tokenId: number) => {
-    if (!accessoryContract || !snowman.address) return;
+    if (!accessoryContract || !snowman.address || isComposing) return;
 
     setIsComposing(true);
 
@@ -128,7 +128,9 @@ export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{name}</Text>
+      <Text style={styles.title}>
+        {name} {isComposing && <ActivityIndicator size={FONT_SIZE.sm} />}
+      </Text>
 
       {isLoading ? (
         <ActivityIndicator color={COLORS.primary} />
