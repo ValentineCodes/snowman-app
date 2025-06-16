@@ -126,7 +126,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Belt: {
-      address: "0x544ece86184A0dF6972d65c534D624D764BA6A03",
+      address: "0x3d707cd2a20A7CB08Ee5218A2c427a98389e3D40",
       abi: [
         {
           inputs: [
@@ -758,7 +758,7 @@ const deployedContracts = {
       },
     },
     BeltMetadata: {
-      address: "0xd497bb59421406B6Cb786A18D97db1b907BaE72e",
+      address: "0xdF0944c696Fc446a3CBbb9E90382416672F10daa",
       abi: [
         {
           inputs: [
@@ -821,7 +821,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Hat: {
-      address: "0xDE1df5543c27448b354fb9F0308030f917230d6A",
+      address: "0x9e509E320C235F7BFCE1588899F2B8c0c3fFdC00",
       abi: [
         {
           inputs: [
@@ -1453,7 +1453,7 @@ const deployedContracts = {
       },
     },
     HatMetadata: {
-      address: "0xDEbD42f605b282cD33A9BE6d13364B2D95532506",
+      address: "0xB9A3F1CB85484fb526F67c91865bcC7cAA011d5A",
       abi: [
         {
           inputs: [
@@ -1516,7 +1516,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Scarf: {
-      address: "0x4C42052D60B0C93f35Eb85Cc1cac46e2269873a4",
+      address: "0x35384ca4D5D9F4a6255039399cfBdBF29099F877",
       abi: [
         {
           inputs: [
@@ -2148,7 +2148,7 @@ const deployedContracts = {
       },
     },
     ScarfMetadata: {
-      address: "0x0B8308591cF505d3588EbBDA93C4739C1D140ce3",
+      address: "0xd109158Cd849AAE800F1f58Da1311489B413c08A",
       abi: [
         {
           inputs: [
@@ -2211,7 +2211,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Snowman: {
-      address: "0x6149D8183A038f3B095424ae6bf299FbF4469d0c",
+      address: "0x0217F1C44A738100323e44a3E0d1ECce79A7ea93",
       abi: [
         {
           inputs: [
@@ -3214,12 +3214,12 @@ const deployedContracts = {
       },
     },
     SnowmanMetadata: {
-      address: "0xC8614fb944B56361eB5b7F54b3Dd9520E5760D33",
+      address: "0x88365CAFE1f367a31b68A34f41Cfffb2352a7978",
       abi: [],
       inheritedFunctions: {},
     },
     TokenURIGen: {
-      address: "0x8bAD44bD091d3d03bfFe66FB6a1f73e80d5cF096",
+      address: "0x70C4D889381EDCe9f3E3370ec34c937E601A0A4e",
       abi: [
         {
           inputs: [

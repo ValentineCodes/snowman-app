@@ -102,7 +102,7 @@ export default function Accessory({ name }: Props) {
         });
 
         const metadata = JSON.parse(
-          base64.decode(tokenURI.replace('data:applicaton/json;base64,', ''))
+          base64.decode(tokenURI.replace('data:application/json;base64,', ''))
         );
 
         const decodedMetadataImage = base64.decode(

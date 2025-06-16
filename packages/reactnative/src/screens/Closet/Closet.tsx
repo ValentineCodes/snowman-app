@@ -46,7 +46,7 @@ export default function Closet() {
     });
 
     const metadata = JSON.parse(
-      base64.decode(tokenURI.replace('data:applicaton/json;base64,', ''))
+      base64.decode(tokenURI.replace('data:application/json;base64,', ''))
     );
     const decodedMetadataImage = base64.decode(
       metadata.image.replace('data:image/svg+xml;base64,', '')

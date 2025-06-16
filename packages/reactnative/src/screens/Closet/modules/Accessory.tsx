@@ -32,11 +32,18 @@ export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
   const { address: connectedAccount } = useAccount();
 
   const { data: accessoryContract } = useDeployedContractInfo(name);
+  const { data: snowmanContract } = useDeployedContractInfo('Snowman');
 
   const { readContract } = useContractRead();
   const { write } = useScaffoldContractWrite({
     contractName: name,
     functionName: 'safeTransferFrom',
+    gasLimit: 500000n
+  });
+
+  const { write: removeAccessory } = useScaffoldContractWrite({
+    contractName: 'Snowman',
+    functionName: 'removeAccessory',
     gasLimit: 500000n
   });
 
@@ -72,7 +79,7 @@ export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
         });
 
         const metadata = JSON.parse(
-          base64.decode(tokenURI.replace('data:applicaton/json;base64,', ''))
+          base64.decode(tokenURI.replace('data:application/json;base64,', ''))
         );
 
         const decodedMetadataImage = base64.decode(
@@ -103,6 +110,21 @@ export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
     setIsComposing(true);
 
     try {
+      // First check if the accessory is already worn and remove it if necessary
+      const hasAccessory = await readContract({
+        abi: snowmanContract?.abi as InterfaceAbi,
+        address: snowman.address,
+        functionName: 'hasAccessory',
+        args: [accessoryContract.address, snowman.id]
+      });
+
+      if (hasAccessory) {
+        await removeAccessory({
+          args: [accessoryContract.address, snowman.id]
+        });
+        toast.show(`Removed ${name} from Snowman`, { type: 'success' });
+      }
+
       const encodedSnowmanId = ethers.AbiCoder.defaultAbiCoder().encode(
         ['uint256'],
         [snowman.id]
@@ -126,6 +148,8 @@ export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
   useEffect(() => {
     getAccessories();
   }, [accessoryContract]);
+
+  if (accessories?.length === 0) return null;
 
   return (
     <View style={styles.container}>

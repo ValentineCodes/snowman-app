@@ -12,7 +12,7 @@ library TokenURIGen {
         return
             string(
                 abi.encodePacked(
-                    "data:applicaton/json;base64,",
+                    "data:application/json;base64,",
                     Base64.encode(
                         bytes(
                             abi.encodePacked(
@@ -39,7 +39,7 @@ library TokenURIGen {
         return
             string(
                 abi.encodePacked(
-                    "data:applicaton/json;base64,",
+                    "data:application/json;base64,",
                     Base64.encode(
                         bytes(
                             abi.encodePacked(
@@ -69,7 +69,7 @@ library TokenURIGen {
         return
             string(
                 abi.encodePacked(
-                    "data:applicaton/json;base64,",
+                    "data:application/json;base64,",
                     Base64.encode(
                         bytes(
                             abi.encodePacked(
