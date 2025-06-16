@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Metadata } from '../components/Snowman';
 import { Token } from '../store/reducers/Tokens';
 import Accessories from './Accessories';
 import CreatePassword from './Authentication/CreatePassword';
@@ -58,6 +59,7 @@ type AppStackParamsList = {
   Accessories: undefined;
   Closet: {
     tokenId: number;
+    metadata: Metadata;
   };
 };
 

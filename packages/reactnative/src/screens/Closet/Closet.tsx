@@ -2,14 +2,7 @@ import { useRoute } from '@react-navigation/native';
 import base64 from 'base-64';
 import { InterfaceAbi } from 'ethers';
 import React, { useEffect, useState } from 'react';
-import {
-  Pressable,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { useToast } from 'react-native-toast-notifications';
 import CustomButton from '../../components/buttons/CustomButton';
@@ -19,9 +12,8 @@ import {
   useDeployedContractInfo,
   useScaffoldContractWrite
 } from '../../hooks/eth-mobile';
-import globalStyles from '../../styles/globalStyles';
 import { COLORS } from '../../utils/constants';
-import { FONT_SIZE, WINDOW_WIDTH } from '../../utils/styles';
+import { WINDOW_WIDTH } from '../../utils/styles';
 import Accessory from './modules/Accessory';
 
 interface Metadata {
@@ -31,10 +23,12 @@ interface Metadata {
 
 export default function Closet() {
   const route = useRoute();
-  const { tokenId } = route.params as { tokenId: number };
+  const { tokenId, metadata: _metadata } = route.params as {
+    tokenId: number;
+    metadata: Metadata;
+  };
 
-  const [metadata, setMetadata] = useState<Metadata>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [metadata, setMetadata] = useState<Metadata>(_metadata);
   const [isComposing, setIsComposing] = useState(false);
   const [hasAccessory, setHasAccessory] = useState(false);
 
@@ -73,20 +67,6 @@ export default function Closet() {
     setMetadata(metadata);
   };
 
-  const getSnowmanMetadata = async () => {
-    if (!snowmanContract) return;
-
-    try {
-      setIsLoading(true);
-
-      await _getSnowmanMetadata();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const checkAccessory = async () => {
     if (!snowmanContract || !beltContract || !hatContract || !scarfContract)
       return;
@@ -116,7 +96,6 @@ export default function Closet() {
   };
 
   useEffect(() => {
-    getSnowmanMetadata();
     checkAccessory();
   }, [snowmanContract, beltContract, hatContract, scarfContract]);
 
@@ -160,13 +139,11 @@ export default function Closet() {
       <Header title={`Snowman #${tokenId}`} />
 
       <View style={styles.snowmanContainer}>
-        {metadata && (
-          <SvgXml
-            xml={metadata.image}
-            width={WINDOW_WIDTH * 0.6}
-            height={WINDOW_WIDTH * 0.6}
-          />
-        )}
+        <SvgXml
+          xml={metadata.image}
+          width={WINDOW_WIDTH * 0.6}
+          height={WINDOW_WIDTH * 0.6}
+        />
       </View>
 
       {hasAccessory && (

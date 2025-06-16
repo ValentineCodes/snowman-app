@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import base64 from 'base-64';
-import { Contract, JsonRpcProvider } from 'ethers';
+import { Contract, InterfaceAbi, JsonRpcProvider } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Card, Text } from 'react-native-paper';
@@ -10,7 +10,7 @@ import { COLORS } from '../utils/constants';
 import { WINDOW_WIDTH } from '../utils/styles';
 
 type Props = { id: number };
-interface Metadata {
+export interface Metadata {
   name: string;
   image: string;
 }
@@ -25,15 +25,15 @@ export default function Snowman({ id }: Props) {
     useDeployedContractInfo('Snowman');
 
   const getDetails = async () => {
-    if (isLoadingSnowmanContract) return;
+    if (!snowmanContract) return;
 
     try {
       setIsLoading(true);
       const provider = new JsonRpcProvider(network.provider);
 
       const snowman = new Contract(
-        snowmanContract?.address,
-        snowmanContract?.abi,
+        snowmanContract.address,
+        snowmanContract.abi as InterfaceAbi,
         provider
       );
 
@@ -73,7 +73,9 @@ export default function Snowman({ id }: Props) {
   if (!metadata) return null;
 
   return (
-    <Pressable onPress={() => navigation.navigate('Closet', { tokenId: id })}>
+    <Pressable
+      onPress={() => navigation.navigate('Closet', { tokenId: id, metadata })}
+    >
       <SvgXml
         xml={metadata.image}
         width={WINDOW_WIDTH * 0.4}
