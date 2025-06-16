@@ -120,7 +120,8 @@ export default function Home() {
         )}
 
         <Text style={styles.centerText}>
-          Mint a unique Snowman☃️ for 0.02 ETH
+          Mint a unique Snowman☃️ for{' '}
+          <Text style={{ color: COLORS.primary }}>0.02 ETH</Text>
         </Text>
 
         <View style={styles.buttonContainer}>

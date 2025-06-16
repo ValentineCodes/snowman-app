@@ -42,31 +42,6 @@ export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
 
   const toast = useToast();
 
-  const addToSnowman = async (tokenId: number) => {
-    if (!accessoryContract || !snowman.address || isComposing) return;
-
-    setIsComposing(true);
-
-    try {
-      const encodedSnowmanId = ethers.AbiCoder.defaultAbiCoder().encode(
-        ['uint256'],
-        [snowman.id]
-      );
-
-      await write({
-        args: [connectedAccount, snowman.address, tokenId, encodedSnowmanId]
-      });
-
-      toast.show(`Added ${name} to Snowman`, { type: 'success' });
-      onAddToSnowman();
-    } catch (error) {
-      console.log(error);
-      toast.show(JSON.stringify(error), { type: 'danger' });
-    } finally {
-      setIsComposing(false);
-    }
-  };
-
   const _getAccessories = async () => {
     if (!accessoryContract) return;
 
@@ -120,6 +95,32 @@ export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
     await _getAccessories();
 
     setIsLoading(false);
+  };
+
+  const addToSnowman = async (tokenId: number) => {
+    if (!accessoryContract || !snowman.address || isComposing) return;
+
+    setIsComposing(true);
+
+    try {
+      const encodedSnowmanId = ethers.AbiCoder.defaultAbiCoder().encode(
+        ['uint256'],
+        [snowman.id]
+      );
+
+      await write({
+        args: [connectedAccount, snowman.address, tokenId, encodedSnowmanId]
+      });
+
+      toast.show(`Added ${name} to Snowman`, { type: 'success' });
+      onAddToSnowman();
+      _getAccessories();
+    } catch (error) {
+      console.log(error);
+      toast.show(JSON.stringify(error), { type: 'danger' });
+    } finally {
+      setIsComposing(false);
+    }
   };
 
   useEffect(() => {
