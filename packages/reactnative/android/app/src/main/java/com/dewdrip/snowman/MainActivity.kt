@@ -1,4 +1,4 @@
-package com.snowman
+package com.dewdrip.snowman
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

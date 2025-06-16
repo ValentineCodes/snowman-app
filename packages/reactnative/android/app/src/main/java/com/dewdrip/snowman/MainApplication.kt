@@ -1,4 +1,4 @@
-package com.snowman
+package com.dewdrip.snowman
 
 import android.app.Application
 import com.facebook.react.PackageList

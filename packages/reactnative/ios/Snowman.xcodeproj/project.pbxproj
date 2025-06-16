@@ -606,7 +606,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.snowman;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dewdrip.snowman;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Snowman.app/Snowman";
 			};
@@ -630,7 +630,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.snowman;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dewdrip.snowman;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Snowman.app/Snowman";
 			};
@@ -658,7 +658,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.snowman;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dewdrip.snowman;
 				PRODUCT_NAME = Snowman;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -673,7 +673,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2C652S7AR6;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Snowman/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Snowman;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -687,7 +687,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.snowman;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dewdrip.snowman;
 				PRODUCT_NAME = Snowman;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

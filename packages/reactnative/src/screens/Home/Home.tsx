@@ -137,7 +137,6 @@ export default function Home() {
             type="outline"
             onPress={() => navigation.navigate('Accessories')}
             style={styles.button}
-            loading={isMinting}
           />
         </View>
       </View>
