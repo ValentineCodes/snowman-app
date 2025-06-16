@@ -5,6 +5,8 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { SvgXml } from 'react-native-svg';
 import { useToast } from 'react-native-toast-notifications';
+// @ts-ignore
+import Ionicons from 'react-native-vector-icons/dist/Ionicons';
 import {
   useAccount,
   useContractRead,
@@ -22,9 +24,15 @@ type Props = {
     id: number;
   };
   onAddToSnowman: () => void;
+  checkForAnyAccessory: () => void;
 };
 
-export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
+export default function Accessory({
+  name,
+  snowman,
+  onAddToSnowman,
+  checkForAnyAccessory
+}: Props) {
   const [accessories, setAccessories] = useState<any[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isComposing, setIsComposing] = useState(false);
@@ -48,6 +56,15 @@ export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
   });
 
   const toast = useToast();
+
+  const [hasAccessory, setHasAccessory] = useState(false);
+
+  const _refreshState = () => {
+    onAddToSnowman();
+    checkForAnyAccessory();
+    checkAccessory();
+    _getAccessories();
+  };
 
   const _getAccessories = async () => {
     if (!accessoryContract) return;
@@ -104,15 +121,54 @@ export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
     setIsLoading(false);
   };
 
-  const addToSnowman = async (tokenId: number) => {
+  const checkAccessory = async () => {
+    if (!accessoryContract || !snowman.address) return;
+
+    const hasAccessoryResult = await readContract({
+      abi: snowmanContract?.abi as InterfaceAbi,
+      address: snowman.address,
+      functionName: 'hasAccessory',
+      args: [accessoryContract.address, snowman.id]
+    });
+
+    setHasAccessory(hasAccessoryResult);
+  };
+
+  const removeAccessoryFromSnowman = async () => {
     if (!accessoryContract || !snowman.address || isComposing) return;
+
+    setIsComposing(true);
+
+    try {
+      await removeAccessory({
+        args: [accessoryContract.address, snowman.id]
+      });
+
+      toast.show(`Removed ${name} from Snowman`, { type: 'success' });
+      _refreshState();
+    } catch (error) {
+      console.log(error);
+      toast.show(JSON.stringify(error), { type: 'danger' });
+    } finally {
+      setIsComposing(false);
+    }
+  };
+
+  const addToSnowman = async (tokenId: number) => {
+    if (
+      !accessoryContract ||
+      !snowmanContract ||
+      !snowman.address ||
+      isComposing
+    )
+      return;
 
     setIsComposing(true);
 
     try {
       // First check if the accessory is already worn and remove it if necessary
       const hasAccessory = await readContract({
-        abi: snowmanContract?.abi as InterfaceAbi,
+        abi: snowmanContract.abi as InterfaceAbi,
         address: snowman.address,
         functionName: 'hasAccessory',
         args: [accessoryContract.address, snowman.id]
@@ -135,8 +191,8 @@ export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
       });
 
       toast.show(`Added ${name} to Snowman`, { type: 'success' });
-      onAddToSnowman();
-      _getAccessories();
+
+      _refreshState();
     } catch (error) {
       console.log(error);
       toast.show(JSON.stringify(error), { type: 'danger' });
@@ -147,15 +203,42 @@ export default function Accessory({ name, snowman, onAddToSnowman }: Props) {
 
   useEffect(() => {
     getAccessories();
-  }, [accessoryContract]);
+    checkAccessory();
+  }, [accessoryContract, snowman.address, snowman.id]);
+
+  const refresh = () => {
+    getAccessories();
+    checkAccessory();
+  };
 
   if (accessories?.length === 0) return null;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        {name} {isComposing && <ActivityIndicator size={FONT_SIZE.sm} />}
-      </Text>
+      <View style={styles.header}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>
+            {name} {isComposing && <ActivityIndicator size={FONT_SIZE.sm} />}
+          </Text>
+
+          <Pressable onPress={refresh}>
+            <Ionicons
+              name="refresh"
+              size={FONT_SIZE.lg}
+              color={COLORS.primary}
+            />
+          </Pressable>
+        </View>
+
+        {hasAccessory && (
+          <Pressable
+            style={styles.removeButton}
+            onPress={removeAccessoryFromSnowman}
+          >
+            <Text style={styles.removeButtonText}>Remove {name}</Text>
+          </Pressable>
+        )}
+      </View>
 
       {isLoading ? (
         <ActivityIndicator color={COLORS.primary} />
@@ -188,6 +271,17 @@ const styles = StyleSheet.create({
   container: {
     padding: 10
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: -5
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10
+  },
   accessoriesContainer: {
     gap: 10,
     marginTop: 10
@@ -199,7 +293,17 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: FONT_SIZE.lg,
-    ...globalStyles.textSemiBold,
-    marginBottom: -5
+    ...globalStyles.textSemiBold
+  },
+  removeButton: {
+    backgroundColor: COLORS.error,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8
+  },
+  removeButtonText: {
+    color: 'white',
+    fontSize: FONT_SIZE.sm,
+    ...globalStyles.textMedium
   }
 });
